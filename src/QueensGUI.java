@@ -12,7 +12,7 @@ import java.awt.event.*;
 public class QueensGUI extends JComponent implements MouseListener{
 	final static long serialVersionUID = 1234567890;
 	private int 				chosenColumn;	// The value of the last column chosen by the user.
-  private int         chosenRow;    // The value of the last row chosen by the user.
+  	private int         chosenRow;    // The value of the last row chosen by the user.
 	private QueensLogic logic;
 
 	// Images for drawing the board
@@ -28,7 +28,7 @@ public class QueensGUI extends JComponent implements MouseListener{
 		queen = Toolkit.getDefaultToolkit().getImage("imgs/queen.png");
 		invalid = Toolkit.getDefaultToolkit().getImage("imgs/invalid.png");
 		backgroundW = Toolkit.getDefaultToolkit().getImage("imgs/backgroundWhite.png");
-    backgroundB = Toolkit.getDefaultToolkit().getImage("imgs/backgroundBlack.png");
+    	backgroundB = Toolkit.getDefaultToolkit().getImage("imgs/backgroundBlack.png");
 
 		border_left = Toolkit.getDefaultToolkit().getImage("imgs/board_left.png");
 		border_right = Toolkit.getDefaultToolkit().getImage("imgs/board_right.png");
