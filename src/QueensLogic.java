@@ -22,6 +22,7 @@ public class QueensLogic {
 
     public void initializeGame(int size) {
         // column indexed
+        this.size = size;
         int columns = size, rows = size;
         this.board = new int[columns][rows];
         this.fact = JFactory.init(2000000, 200000);
@@ -67,6 +68,15 @@ public class QueensLogic {
         }
 
         bdd = bdd.restrict(fact.ithVar(column * size + row).biimp(fact.one()));
+
+        for (int c = 0; c < size; c++) {
+            for (int r = 0; r < size; r++) {
+                BDD withQueenHere = bdd.restrict(fact.ithVar(c * size + r).biimp(fact.one()));
+                if (board[c][r] == 0 && withQueenHere.isZero()) {
+                    board[c][r] = -1;
+                }
+            }
+        }
 
         board[column][row] = 1;
 
