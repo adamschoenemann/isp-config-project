@@ -1,0 +1,33 @@
+<project>
+
+    <path id="lib-path">
+        <fileset dir="lib">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="bin/classes"/>
+        <javac srcdir="src" destdir="bin/classes">
+            <classpath refid="lib-path" />
+        </javac>
+    </target>
+
+    <!--<target name="jar">
+        <mkdir dir="bin/jar"/>
+        <jar destfile="bin/jar/HelloWorld.jar" basedir="bin/classes">
+            <manifest>
+                <attribute name="Main-Class" value="oata.HelloWorld"/>
+            </manifest>
+        </jar>
+    </target>-->
+
+    <target name="run">
+        <java classname="ShowBoard" classpath="bin/classes" fork="true"/>
+    </target>
+
+</project>
