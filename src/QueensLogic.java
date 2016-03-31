@@ -1,7 +1,7 @@
 /**
  * This class implements the logic behind the BDD for the n-queens problem
  * You should implement all the missing methods
- * 
+ *
  * @author Stavros Amanatidis
  *
  */
@@ -10,8 +10,8 @@ import java.util.*;
 import net.sf.javabdd.*;
 
 public class QueensLogic {
-    private int x = 0;
-    private int y = 0;
+    private int rows = 0;
+    private int cols = 0;
     private int[][] board;
 
 
@@ -20,12 +20,12 @@ public class QueensLogic {
     }
 
     public void initializeGame(int size) {
-        this.x = size;
-        this.y = size;
-        this.board = new int[x][y];
+        this.rows = size;
+        this.cols = size;
+        this.board = new int[rows][cols];
     }
 
-   
+
     public int[][] getGameBoard() {
         return board;
     }
@@ -35,11 +35,11 @@ public class QueensLogic {
         if (board[column][row] == -1 || board[column][row] == 1) {
             return true;
         }
-        
+
         board[column][row] = 1;
-        
+
         // put some logic here..
-      
+
         return true;
     }
 }
