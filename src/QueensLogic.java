@@ -43,8 +43,8 @@ public class QueensLogic {
                 BDD consequent = fact.one();
                 bdd = columnConstraint(consequent, antecendent, bdd, c, r, size);
                 bdd = rowConstraint(consequent, antecendent, bdd, c, r, size);
-                bdd = diagonal1Constraint(consequent, antecendent, bdd, c, r, size);
-                bdd = diagonal2Constraint(consequent, antecendent, bdd, c, r, size);
+                bdd = sw_neConstraint(consequent, antecendent, bdd, c, r, size);
+                bdd = nw_seConstraint(consequent, antecendent, bdd, c, r, size);
             }
         }
 
@@ -52,7 +52,7 @@ public class QueensLogic {
 
     }
 
-    private BDD diagonal1Constraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
+    private BDD sw_neConstraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
 
         int minCol = c;
         int minRow = r;
@@ -79,7 +79,7 @@ public class QueensLogic {
         return bdd.and(expr);
     }
 
-    private BDD diagonal2Constraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
+    private BDD nw_seConstraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
 
         int minCol = c;
         int maxRow = r;
