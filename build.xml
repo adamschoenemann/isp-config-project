@@ -27,7 +27,10 @@
     </target>-->
 
     <target name="run" depends="compile">
-        <java classname="ShowBoard" classpath="bin/classes" fork="true"/>
+        <java classname="ShowBoard" fork="true">
+            <classpath path="bin/classes"/>
+            <classpath refid="lib-path"/>
+        </java>
     </target>
 
 </project>
