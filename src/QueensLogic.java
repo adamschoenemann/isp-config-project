@@ -135,9 +135,9 @@ public class QueensLogic {
         for (int c = 0; c < size; c++) {
             BDD mustHaveQueen = fact.zero();
             for (int r = 0; r < size; r++) {
-                mustHaveQueen.or(fact.nithVar(c * size + r));
+                mustHaveQueen = mustHaveQueen.or(fact.ithVar(c * size + r));
             }
-            constraint.and(mustHaveQueen);
+            constraint = constraint.and(mustHaveQueen);
         }
         return constraint;
     }
