@@ -10,19 +10,22 @@ import java.util.*;
 import net.sf.javabdd.*;
 
 public class QueensLogic {
-    private int rows = 0;
-    private int cols = 0;
+    private int size = 0;
     private int[][] board;
 
+    private BDD bdd = null;
+    private BDDFactory fact = null;
 
     public QueensLogic() {
        //constructor
     }
 
     public void initializeGame(int size) {
-        this.rows = size;
-        this.cols = size;
-        this.board = new int[rows][cols];
+        // column indexed
+        int columns = size, rows = size;
+        this.board = new int[columns][rows];
+        this.fact = JFactory.init(2000000, 200000);
+        this.bdd = initBDD(size, fact);
     }
 
 
@@ -30,16 +33,15 @@ public class QueensLogic {
         return board;
     }
 
-    private BDD initBDD(int size) {
+    private BDD initBDD(int size, BDDFactory fact) {
 
-        BDDFactory fact = JFactory.init(2000000, 200000);
         fact.setVarNum(size * size);
 
 
         BDD bdd = fact.one();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                bdd = rowConstraint(fact, bdd, i, j, size);
+        for (int c = 0; c < size; c++) {
+            for (int r = 0; r < size; r++) {
+                bdd = rowConstraint(fact, bdd, c, r, size);
             }
         }
 
@@ -47,13 +49,13 @@ public class QueensLogic {
 
     }
 
-    private BDD rowConstraint(BDDFactory fact, BDD bdd, int i, int j, int size) {
-        BDD antecedent = fact.ithVar(i * size + j);
+    private BDD rowConstraint(BDDFactory fact, BDD bdd, int c, int r, int size) {
+        BDD antecedent = fact.ithVar(c * size + r);
         BDD consequent = fact.one();
 
         for (int l = 0; l < size; l++) {
-            if (l == j) continue;
-            consequent = consequent.and(fact.nithVar(i * size + l));
+            if (l == c) continue;
+            consequent = consequent.and(fact.nithVar(l * size + r));
         }
         BDD expr = antecedent.imp(consequent);
         return bdd.and(expr);
@@ -64,6 +66,8 @@ public class QueensLogic {
         if (board[column][row] == -1 || board[column][row] == 1) {
             return true;
         }
+
+        bdd = bdd.restrict(fact.ithVar(column * size + row).biimp(fact.one()));
 
         board[column][row] = 1;
 
