@@ -37,7 +37,6 @@ public class QueensLogic {
 
         fact.setVarNum(size * size);
 
-
         BDD bdd = fact.one();
         for (int c = 0; c < size; c++) {
             for (int r = 0; r < size; r++) {
