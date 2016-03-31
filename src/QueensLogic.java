@@ -28,7 +28,6 @@ public class QueensLogic {
         this.bdd = initBDD(size, fact);
     }
 
-
     public int[][] getGameBoard() {
         return board;
     }
@@ -37,16 +36,31 @@ public class QueensLogic {
 
         fact.setVarNum(size * size);
 
-
         BDD bdd = fact.one();
         for (int c = 0; c < size; c++) {
             for (int r = 0; r < size; r++) {
+                bdd = columnConstraint(fact, bdd, c, r, size);
                 bdd = rowConstraint(fact, bdd, c, r, size);
             }
         }
 
         return bdd;
 
+    }
+
+    private BDD columnConstraint(BDDFactory fact, BDD bdd, int c, int r, int size) {
+        BDD antecedent = fact.ithVar(c * size + r);
+        BDD consequent = fact.one();
+
+        int start = c * size;
+        int end   = start + size;
+
+        for (int l = start; l < end; l++) {
+            if (l == start + r) continue;
+            consequent = consequent.and(fact.nithVar(c * size + l));
+        }
+        BDD expr = antecedent.imp(consequent);
+        return bdd.and(expr);
     }
 
     private BDD rowConstraint(BDDFactory fact, BDD bdd, int c, int r, int size) {
