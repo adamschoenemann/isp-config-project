@@ -45,6 +45,7 @@ public class QueensLogic {
                 bdd = rowConstraint(consequent, antecendent, bdd, c, r, size);
                 bdd = diagonal1Constraint(consequent, antecendent, bdd, c, r, size);
                 bdd = diagonal2Constraint(consequent, antecendent, bdd, c, r, size);
+                bdd = bdd.and(allQueensConstraint());
             }
         }
 
@@ -129,6 +130,18 @@ public class QueensLogic {
         return bdd.and(expr);
     }
 
+    private BDD allQueensConstraint() {
+        BDD constraint = fact.one();
+        for (int c = 0; c < size; c++) {
+            BDD mustHaveQueen = fact.zero();
+            for (int r = 0; r < size; r++) {
+                mustHaveQueen.or(fact.nithVar(c * size + r));
+            }
+            constraint.and(mustHaveQueen);
+        }
+        return constraint;
+    }
+
     public boolean insertQueen(int column, int row) {
 
         if (board[column][row] == -1 || board[column][row] == 1) {
@@ -136,10 +149,14 @@ public class QueensLogic {
         }
 
         bdd = bdd.restrict(fact.ithVar(column * size + row).biimp(fact.one()));
+        System.out.println(bdd.isZero());
 
         for (int c = 0; c < size; c++) {
             for (int r = 0; r < size; r++) {
+                int index = c * size + r;
+                // can this be optimized? Is there a variable assignment method?
                 BDD withQueenHere = bdd.restrict(fact.ithVar(c * size + r).biimp(fact.one()));
+
                 if (board[c][r] == 0 && withQueenHere.isZero()) {
                     board[c][r] = -1;
                 }
