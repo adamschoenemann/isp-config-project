@@ -58,7 +58,7 @@ public class QueensLogic {
 
         for (int l = start; l < end; l++) {
             if (l == start + r) continue;
-            consequent = consequent.and(fact.nithVar(c * size + l));
+            consequent = consequent.and(fact.nithVar(l));
         }
         BDD expr = antecedent.imp(consequent);
         return bdd.and(expr);
