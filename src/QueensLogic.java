@@ -166,7 +166,7 @@ public class QueensLogic {
 
           }
 
-          // place queen where it is the only one choice left
+          // place queen where it is only one choice left
           if(sum == 1){
             board[c][whereZero] = 1;
           }
@@ -182,7 +182,7 @@ public class QueensLogic {
         }
 
         bdd = bdd.restrict(fact.ithVar(column * size + row).biimp(fact.one()));
-        System.out.println(bdd.isZero());
+        // System.out.println(bdd.isZero());
 
         for (int c = 0; c < size; c++) {
             for (int r = 0; r < size; r++) {
