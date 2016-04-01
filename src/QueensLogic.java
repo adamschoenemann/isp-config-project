@@ -202,6 +202,26 @@ public class QueensLogic {
           placeForcedQueens();
         }
 
+        boolean rememberMe = true;
+
+        for (int c = 0; c < size; c++) {
+
+            for (int r = 0; r < size; r++) {
+
+                if (board[c][r] != 0 && rememberMe){
+                  rememberMe = true;
+                }
+                else {
+                  rememberMe = false;
+                }
+            }
+        }
+
+        if (rememberMe){
+          System.out.println("Done!");
+        }
+
+
         return true;
     }
 }
