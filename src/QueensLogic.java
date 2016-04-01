@@ -15,6 +15,8 @@ public class QueensLogic {
     private BDD bdd = null;
     private BDDFactory fact = null;
 
+    private boolean fillRestOfBoard = true;
+
     public QueensLogic() {
        //constructor
     }
@@ -142,6 +144,37 @@ public class QueensLogic {
         return constraint;
     }
 
+    private void placeForcedQueens(){
+
+      for (int c = 0; c < size; c++) {
+
+          int sum = 0;
+          int whereZero = 0;
+
+          for (int r = 0; r < size; r++) {
+
+              // skip row if there is already a queen in it
+              if(board[c][r] == 1){
+                break;
+              }
+
+              // count how many fields are empty
+              if(board[c][r] == 0){
+                whereZero = r;
+                sum++;
+              }
+
+          }
+
+          // place queen where it is the only one choice left
+          if(sum == 1){
+            board[c][whereZero] = 1;
+          }
+
+      }
+
+    }
+
     public boolean insertQueen(int column, int row) {
 
         if (board[column][row] == -1 || board[column][row] == 1) {
@@ -165,7 +198,9 @@ public class QueensLogic {
 
         board[column][row] = 1;
 
-        // put some logic here..
+        if(fillRestOfBoard){
+          placeForcedQueens();
+        }
 
         return true;
     }
