@@ -15,6 +15,8 @@ public class QueensLogic {
     private BDD bdd = null;
     private BDDFactory fact = null;
 
+    private boolean fillRestOfBoard = true;
+
     public QueensLogic() {
        //constructor
     }
@@ -43,8 +45,9 @@ public class QueensLogic {
                 BDD consequent = fact.one();
                 bdd = columnConstraint(consequent, antecendent, bdd, c, r, size);
                 bdd = rowConstraint(consequent, antecendent, bdd, c, r, size);
-                bdd = diagonal1Constraint(consequent, antecendent, bdd, c, r, size);
-                bdd = diagonal2Constraint(consequent, antecendent, bdd, c, r, size);
+                bdd = sw_neConstraint(consequent, antecendent, bdd, c, r, size);
+                bdd = nw_seConstraint(consequent, antecendent, bdd, c, r, size);
+                bdd = bdd.and(allQueensConstraint());
             }
         }
 
@@ -52,7 +55,7 @@ public class QueensLogic {
 
     }
 
-    private BDD diagonal1Constraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
+    private BDD sw_neConstraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
 
         int minCol = c;
         int minRow = r;
@@ -79,7 +82,7 @@ public class QueensLogic {
         return bdd.and(expr);
     }
 
-    private BDD diagonal2Constraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
+    private BDD nw_seConstraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
 
         int minCol = c;
         int maxRow = r;
@@ -129,6 +132,49 @@ public class QueensLogic {
         return bdd.and(expr);
     }
 
+    private BDD allQueensConstraint() {
+        BDD constraint = fact.one();
+        for (int c = 0; c < size; c++) {
+            BDD mustHaveQueen = fact.zero();
+            for (int r = 0; r < size; r++) {
+                mustHaveQueen = mustHaveQueen.or(fact.ithVar(c * size + r));
+            }
+            constraint = constraint.and(mustHaveQueen);
+        }
+        return constraint;
+    }
+
+    private void placeForcedQueens(){
+
+      for (int c = 0; c < size; c++) {
+
+          int sum = 0;
+          int whereZero = 0;
+
+          for (int r = 0; r < size; r++) {
+
+              // skip row if there is already a queen in it
+              if(board[c][r] == 1){
+                break;
+              }
+
+              // count how many fields are empty
+              if(board[c][r] == 0){
+                whereZero = r;
+                sum++;
+              }
+
+          }
+
+          // place queen where it is only one choice left
+          if(sum == 1){
+            board[c][whereZero] = 1;
+          }
+
+      }
+
+    }
+
     public boolean insertQueen(int column, int row) {
 
         if (board[column][row] == -1 || board[column][row] == 1) {
@@ -136,10 +182,14 @@ public class QueensLogic {
         }
 
         bdd = bdd.restrict(fact.ithVar(column * size + row).biimp(fact.one()));
+        // System.out.println(bdd.isZero());
 
         for (int c = 0; c < size; c++) {
             for (int r = 0; r < size; r++) {
+                int index = c * size + r;
+                // can this be optimized? Is there a variable assignment method?
                 BDD withQueenHere = bdd.restrict(fact.ithVar(c * size + r).biimp(fact.one()));
+
                 if (board[c][r] == 0 && withQueenHere.isZero()) {
                     board[c][r] = -1;
                 }
@@ -148,7 +198,29 @@ public class QueensLogic {
 
         board[column][row] = 1;
 
-        // put some logic here..
+        if(fillRestOfBoard){
+          placeForcedQueens();
+        }
+
+        boolean rememberMe = true;
+
+        for (int c = 0; c < size; c++) {
+
+            for (int r = 0; r < size; r++) {
+
+                if (board[c][r] != 0 && rememberMe){
+                  rememberMe = true;
+                }
+                else {
+                  rememberMe = false;
+                }
+            }
+        }
+
+        if (rememberMe){
+          System.out.println("Done!");
+        }
+
 
         return true;
     }

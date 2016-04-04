@@ -12,7 +12,7 @@
 
     <target name="compile">
         <mkdir dir="bin/classes"/>
-        <javac srcdir="src" destdir="bin/classes">
+        <javac debug="on" srcdir="src" destdir="bin/classes">
             <classpath refid="lib-path" />
         </javac>
     </target>
@@ -30,6 +30,7 @@
         <java classname="ShowBoard" fork="true">
             <classpath path="bin/classes"/>
             <classpath refid="lib-path"/>
+            <jvmarg value="-enableassertions"/>
         </java>
     </target>
 
