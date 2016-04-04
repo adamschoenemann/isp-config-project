@@ -86,7 +86,7 @@ public class QueensLogic {
 
         int minCol = c;
         int maxRow = r;
-        int start = minCol * size + maxRow;
+        int start = 0;
         while (minCol >= 0 && !(maxRow > (size - 1))) {
             start = minCol * size + maxRow;
             minCol = minCol - 1;
@@ -95,7 +95,7 @@ public class QueensLogic {
 
         int maxCol = c;
         int minRow = r;
-        int end = maxCol * size + minRow;
+        int end = 0;
         while (!(maxCol > (size - 1)) && minRow >= 0) {
             end = maxCol * size + minRow;
             maxCol = maxCol + 1;
@@ -186,8 +186,8 @@ public class QueensLogic {
 
         for (int c = 0; c < size; c++) {
             for (int r = 0; r < size; r++) {
-                int index = c * size + r;
-                // can this be optimized? Is there a variable assignment method?
+//                int index = c * size + r;
+//                can this be optimized? Is there a variable assignment method?
                 BDD withQueenHere = bdd.restrict(fact.ithVar(c * size + r).biimp(fact.one()));
 
                 if (board[c][r] == 0 && withQueenHere.isZero()) {
