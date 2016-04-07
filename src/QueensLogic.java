@@ -100,7 +100,7 @@ public class QueensLogic {
 
         int minCol = c;
         int maxRow = r;
-        int start = minCol * size + maxRow;
+        int start = 0;
         while (minCol >= 0 && !(maxRow > (size - 1))) {
             start = minCol * size + maxRow;
             minCol = minCol - 1;
@@ -109,7 +109,7 @@ public class QueensLogic {
 
         int maxCol = c;
         int minRow = r;
-        int end = maxCol * size + minRow;
+        int end = 0;
         while (!(maxCol > (size - 1)) && minRow >= 0) {
             end = maxCol * size + minRow;
             maxCol = maxCol + 1;
@@ -208,11 +208,8 @@ public class QueensLogic {
         }
 
         // restrict the bdd with the queen that has now been placed
-        int index = column * size + row;
-        bdd = bdd.restrict(fact.ithVar(index).biimp(fact.one()));
-
-        // debug. TODO: reomove
-        System.out.println(bdd.isZero());
+        int queenIndex = column * size + row;
+        bdd = bdd.restrict(fact.ithVar(queenIndex).biimp(fact.one()));
 
         // loop through the board and check if placing a queen here will make
         // the BDD unsatisfiable
@@ -238,6 +235,26 @@ public class QueensLogic {
         if(fillRestOfBoard){
           placeForcedQueens();
         }
+
+        boolean rememberMe = true;
+
+        for (int c = 0; c < size; c++) {
+
+            for (int r = 0; r < size; r++) {
+
+                if (board[c][r] != 0 && rememberMe){
+                  rememberMe = true;
+                }
+                else {
+                  rememberMe = false;
+                }
+            }
+        }
+
+        if (rememberMe){
+          System.out.println("Done!");
+        }
+
 
         return true;
     }
