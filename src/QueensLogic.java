@@ -53,7 +53,7 @@ public class QueensLogic {
                 bdd = rowConstraint(consequent, antecendent, bdd, c, r, size);
                 bdd = sw_neConstraint(consequent, antecendent, bdd, c, r, size);
                 bdd = nw_seConstraint(consequent, antecendent, bdd, c, r, size);
-                bdd = bdd.and(allQueensConstraint());
+                bdd = bdd.andWith(allQueensConstraint());
             }
         }
 
@@ -86,10 +86,10 @@ public class QueensLogic {
         }
         for (int i = start; i < end; i = i + (size + 1)) {
             if (i == c * size + r) continue;
-            consequent = consequent.and(fact.nithVar(i));
+            consequent = consequent.andWith(fact.nithVar(i));
         }
         BDD expr = antecedent.imp(consequent);
-        return bdd.and(expr);
+        return bdd.andWith(expr);
     }
 
     /**
@@ -118,10 +118,10 @@ public class QueensLogic {
 
         for (int i = start; i < end; i = i + (size - 1)) {
             if (i == c * size + r) continue;
-            consequent = consequent.and(fact.nithVar(i));
+            consequent = consequent.andWith(fact.nithVar(i));
         }
         BDD expr = antecedent.imp(consequent);
-        return bdd.and(expr);
+        return bdd.andWith(expr);
     }
 
     /**
@@ -133,10 +133,10 @@ public class QueensLogic {
         int end   = start + size;
         for (int l = start; l < end; l++) {
             if (l == start + r) continue;
-            consequent = consequent.and(fact.nithVar(l));
+            consequent = consequent.andWith(fact.nithVar(l));
         }
         BDD expr = antecedent.imp(consequent);
-        return bdd.and(expr);
+        return bdd.andWith(expr);
     }
 
     /**
@@ -146,10 +146,10 @@ public class QueensLogic {
 
         for (int l = 0; l < size; l++) {
             if (l == c) continue;
-            consequent = consequent.and(fact.nithVar(l * size + r));
+            consequent = consequent.andWith(fact.nithVar(l * size + r));
         }
         BDD expr = antecedent.imp(consequent);
-        return bdd.and(expr);
+        return bdd.andWith(expr);
     }
 
     /**
@@ -162,7 +162,7 @@ public class QueensLogic {
             for (int r = 0; r < size; r++) {
                 mustHaveQueen = mustHaveQueen.or(fact.ithVar(c * size + r));
             }
-            constraint = constraint.and(mustHaveQueen);
+            constraint = constraint.andWith(mustHaveQueen);
         }
         return constraint;
     }
