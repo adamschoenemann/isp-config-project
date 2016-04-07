@@ -34,6 +34,12 @@ public class QueensLogic {
         return board;
     }
 
+    /**
+     * Initializes a BDD
+     * @param  size       The size of the gameboard
+     * @param  fact       A factory that creates BDDs
+     * @return            The initialized BDD
+     */
     private BDD initBDD(int size, BDDFactory fact) {
 
         fact.setVarNum(size * size);
@@ -55,6 +61,10 @@ public class QueensLogic {
 
     }
 
+    /**
+     * Applies the constraint that two queens cannot be on the same
+     * South-West/North-East diagonal
+     */
     private BDD sw_neConstraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
 
         int minCol = c;
@@ -82,6 +92,10 @@ public class QueensLogic {
         return bdd.and(expr);
     }
 
+    /**
+     * Applies the constraint that two queens cannot be on the same
+     * North-West/South-East diagonal
+     */
     private BDD nw_seConstraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
 
         int minCol = c;
@@ -110,6 +124,9 @@ public class QueensLogic {
         return bdd.and(expr);
     }
 
+    /**
+     * Applies the constraint that two queens cannot be in the same column
+     */
     private BDD columnConstraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
 
         int start = c * size;
@@ -122,6 +139,9 @@ public class QueensLogic {
         return bdd.and(expr);
     }
 
+    /**
+     * Applies the constraint that two queens cannot be in the same row
+     */
     private BDD rowConstraint(BDD consequent, BDD antecedent, BDD bdd, int c, int r, int size) {
 
         for (int l = 0; l < size; l++) {
@@ -132,6 +152,9 @@ public class QueensLogic {
         return bdd.and(expr);
     }
 
+    /**
+     * Applies the constraint that all rows must have exactly oen queen
+     */
     private BDD allQueensConstraint() {
         BDD constraint = fact.one();
         for (int c = 0; c < size; c++) {
@@ -144,60 +167,74 @@ public class QueensLogic {
         return constraint;
     }
 
+    /**
+     * Place a queen when there are no options left
+     */
     private void placeForcedQueens(){
 
-      for (int c = 0; c < size; c++) {
+        for (int c = 0; c < size; c++) {
 
-          int sum = 0;
-          int whereZero = 0;
+            int sum = 0;
+            int whereZero = 0;
 
-          for (int r = 0; r < size; r++) {
+            for (int r = 0; r < size; r++) {
 
-              // skip row if there is already a queen in it
-              if(board[c][r] == 1){
-                break;
-              }
+                // skip row if there is already a queen in it
+                if(board[c][r] == 1){
+                  break;
+                }
 
-              // count how many fields are empty
-              if(board[c][r] == 0){
-                whereZero = r;
-                sum++;
-              }
+                // count how many fields are empty
+                if(board[c][r] == 0){
+                  whereZero = r;
+                  sum++;
+                }
 
-          }
+            }
 
-          // place queen where it is the only one choice left
-          if(sum == 1){
-            board[c][whereZero] = 1;
-          }
-
-      }
-
+            // place queen where it is the only one choice left
+            if(sum == 1){
+              board[c][whereZero] = 1;
+            }
+        }
     }
 
+    // React to a queen being inserted by the user
     public boolean insertQueen(int column, int row) {
 
+        // if there is already a queen, or this field has been marked as invalid
         if (board[column][row] == -1 || board[column][row] == 1) {
             return true;
         }
 
-        bdd = bdd.restrict(fact.ithVar(column * size + row).biimp(fact.one()));
+        // restrict the bdd with the queen that has now been placed
+        int index = column * size + row;
+        bdd = bdd.restrict(fact.ithVar(index).biimp(fact.one()));
+
+        // debug. TODO: reomove
         System.out.println(bdd.isZero());
 
+        // loop through the board and check if placing a queen here will make
+        // the BDD unsatisfiable
         for (int c = 0; c < size; c++) {
             for (int r = 0; r < size; r++) {
                 int index = c * size + r;
-                // can this be optimized? Is there a variable assignment method?
+
+                // TODO: can this be optimized? Is there a variable assignment method?
                 BDD withQueenHere = bdd.restrict(fact.ithVar(c * size + r).biimp(fact.one()));
 
+                // if placing a queen here makes the BDD unsatisfiable, make
+                // this field ivnalid
                 if (board[c][r] == 0 && withQueenHere.isZero()) {
                     board[c][r] = -1;
                 }
             }
         }
 
+        // add the queen to the board
         board[column][row] = 1;
 
+        // if we want to fill the rest of the board, lets do it!
         if(fillRestOfBoard){
           placeForcedQueens();
         }
